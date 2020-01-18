@@ -72,21 +72,38 @@ limitations under the License.
   </main>
 </div>
 
-<!-- Import and configure the Firebase SDK -->
-<!-- These scripts are made available when the app is served or deployed on Firebase Hosting -->
-<!-- If you do not serve/host your project using Firebase Hosting see https://firebase.google.com/docs/web/setup -->
-<script src="/__/firebase/7.7.0/firebase-app.js"></script>
-<script src="/__/firebase/7.7.0/firebase-messaging.js"></script>
-<script src="/__/firebase/init.js"></script>
+	<!-- The core Firebase JS SDK is always required and must be listed first -->
+	<script src="https://www.gstatic.com/firebasejs/7.6.2/firebase-app.js"></script>
+
+	<!-- TODO: Add SDKs for Firebase products that you want to use
+		 https://firebase.google.com/docs/web/setup#available-libraries -->
+	<script src="https://www.gstatic.com/firebasejs/7.6.2/firebase-messaging.js"></script>		 
+	<script src="https://www.gstatic.com/firebasejs/7.6.2/firebase-analytics.js"></script>
 
 <script>
+
+ // Your web app's Firebase configuration
+	  var firebaseConfig = {
+		apiKey: "AIzaSyCsQXsf8sGQEFwumxqh1SDT-AggUVFqP7I",
+		authDomain: "citofono-push-notification.firebaseapp.com",
+		databaseURL: "https://citofono-push-notification.firebaseio.com",
+		projectId: "citofono-push-notification",
+		storageBucket: "citofono-push-notification.appspot.com",
+		messagingSenderId: "691113360653",
+		appId: "1:691113360653:web:c9a34e9e46d1a0902d8444",
+		measurementId: "G-CZ2XFQGX3F"
+	  };
+	  // Initialize Firebase
+	  firebase.initializeApp(firebaseConfig);
+	  firebase.analytics();
+
   // [START get_messaging_object]
   // Retrieve Firebase Messaging object.
   const messaging = firebase.messaging();
   // [END get_messaging_object]
   // [START set_public_vapid_key]
   // Add the public key generated from the console here.
-  messaging.usePublicVapidKey('<YOUR_PUBLIC_VAPID_KEY_HERE>');
+  messaging.usePublicVapidKey("BGkAKQHczlSljIEsANfLRq0RLY0IDRxsb5JGaA3oLUwtmltHiV8N_skwpa-g6hMf-EssXrg-uAF4vSQAtmT3MwM");
   // [END set_public_vapid_key]
 
   // IDs of divs that display Instance ID token UI or request permission UI.
