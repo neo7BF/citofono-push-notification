@@ -82,68 +82,30 @@ limitations under the License.
 
 <script>
 
- // Your web app's Firebase configuration
-	  var firebaseConfig = {
-		apiKey: "AIzaSyCsQXsf8sGQEFwumxqh1SDT-AggUVFqP7I",
-		authDomain: "citofono-push-notification.firebaseapp.com",
-		databaseURL: "https://citofono-push-notification.firebaseio.com",
-		projectId: "citofono-push-notification",
-		storageBucket: "citofono-push-notification.appspot.com",
-		messagingSenderId: "691113360653",
-		appId: "1:691113360653:web:c9a34e9e46d1a0902d8444",
-		measurementId: "G-CZ2XFQGX3F"
-	  };
-	  // Initialize Firebase
-	  firebase.initializeApp(firebaseConfig);
-	  firebase.analytics();
+  // Your web app's Firebase configuration
+  var firebaseConfig = {
+ 	apiKey: "AIzaSyCsQXsf8sGQEFwumxqh1SDT-AggUVFqP7I",
+	authDomain: "citofono-push-notification.firebaseapp.com",
+	databaseURL: "https://citofono-push-notification.firebaseio.com",
+	projectId: "citofono-push-notification",
+	storageBucket: "citofono-push-notification.appspot.com",
+	messagingSenderId: "691113360653",
+	appId: "1:691113360653:web:c9a34e9e46d1a0902d8444",
+	measurementId: "G-CZ2XFQGX3F"
+  };
+
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  firebase.analytics();
 
   // [START get_messaging_object]
   // Retrieve Firebase Messaging object.
   const messaging = firebase.messaging();
-  // [END get_messaging_object]
-  // [START set_public_vapid_key]
-  // Add the public key generated from the console here.
-  messaging.usePublicVapidKey("BGkAKQHczlSljIEsANfLRq0RLY0IDRxsb5JGaA3oLUwtmltHiV8N_skwpa-g6hMf-EssXrg-uAF4vSQAtmT3MwM");
-  // [END set_public_vapid_key]
-
+  // [END get_messaging_object]	
+	
   // IDs of divs that display Instance ID token UI or request permission UI.
   const tokenDivId = 'token_div';
   const permissionDivId = 'permission_div';
-
-  // [START refresh_token]
-  // Callback fired if Instance ID token is updated.
-  messaging.onTokenRefresh(() => {
-    messaging.getToken().then((refreshedToken) => {
-      console.log('Token refreshed.');
-      // Indicate that the new Instance ID token has not yet been sent to the
-      // app server.
-      setTokenSentToServer(false);
-      // Send Instance ID token to app server.
-      sendTokenToServer(refreshedToken);
-      // [START_EXCLUDE]
-      // Display new Instance ID token and clear UI of all previous messages.
-      resetUI();
-      // [END_EXCLUDE]
-    }).catch((err) => {
-      console.log('Unable to retrieve refreshed token ', err);
-      showToken('Unable to retrieve refreshed token ', err);
-    });
-  });
-  // [END refresh_token]
-
-  // [START receive_message]
-  // Handle incoming messages. Called when:
-  // - a message is received while the app has focus
-  // - the user clicks on an app notification created by a service worker
-  //   `messaging.setBackgroundMessageHandler` handler.
-  messaging.onMessage((payload) => {
-    console.log('Message received. ', payload);
-    // [START_EXCLUDE]
-    // Update the UI to include the received message.
-    appendMessage(payload);
-    // [END_EXCLUDE]
-  });
-  // [END receive_message]
 
   function resetUI() {
     clearMessages();
@@ -169,7 +131,6 @@ limitations under the License.
     });
     // [END get_token]
   }
-
 
   function showToken(currentToken) {
     // Show token in console and UI.
@@ -280,8 +241,64 @@ limitations under the License.
     showHideDiv(tokenDivId, false);
     showHideDiv(permissionDivId, true);
   }
+	
+  /*This piece was necessary to register the service worker from a different location than the default of firebase */	
+  if ('serviceWorker' in navigator) {
+		navigator.serviceWorker.register('/citofono-push-notification/firebase-messagging-sw.js')
+		.then((registration) => {
+  		
+			messaging.useServiceWorker(registration);
+  			// Request permission and get token.....
+			// [START set_public_vapid_key]
+  			// Add the public key generated from the console here.
+  			messaging.usePublicVapidKey("BGkAKQHczlSljIEsANfLRq0RLY0IDRxsb5JGaA3oLUwtmltHiV8N_skwpa-g6hMf-EssXrg-uAF4vSQAtmT3MwM");
+  			// [END set_public_vapid_key]
 
-  resetUI();
+ 			// [START refresh_token]
+  			// Callback fired if Instance ID token is updated.
+  			messaging.onTokenRefresh(() => {
+    				messaging.getToken().then((refreshedToken) => {
+      				console.log('Token refreshed.');
+      				// Indicate that the new Instance ID token has not yet been sent to the
+      				// app server.
+      				setTokenSentToServer(false);
+      				// Send Instance ID token to app server.
+      				sendTokenToServer(refreshedToken);
+      				// [START_EXCLUDE]
+      				// Display new Instance ID token and clear UI of all previous messages.
+      				resetUI();
+      				// [END_EXCLUDE]
+    				}).catch((err) => {
+      					console.log('Unable to retrieve refreshed token ', err);
+      					showToken('Unable to retrieve refreshed token ', err);
+    				});
+  			});
+  			// [END refresh_token]
+
+  			// [START receive_message]
+  			// Handle incoming messages. Called when:
+  			// - a message is received while the app has focus
+  			// - the user clicks on an app notification created by a service worker
+  			//   `messaging.setBackgroundMessageHandler` handler.
+  			messaging.onMessage((payload) => {
+    				console.log('Message received. ', payload);
+    				// [START_EXCLUDE]
+    				// Update the UI to include the received message.
+    				appendMessage(payload);
+    				// [END_EXCLUDE]
+  			});
+  			// [END receive_message]
+			
+  			resetUI();			
+			
+		},/*Catch*/ (error) => {
+    			console.log('Service worker registration failed:', error);
+  		}
+	);
+ } else {
+ 	console.log('Service workers are not supported.');
+ }
+	
 </script>
 </body>
 </html>
