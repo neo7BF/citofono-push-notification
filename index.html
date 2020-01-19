@@ -95,12 +95,17 @@ limitations under the License.
   };
 
   // Initialize Firebase
+  console.log("Initializing firebase...");
   firebase.initializeApp(firebaseConfig);
+  console.log("Initializing firebase...done.");
+	
   firebase.analytics();
 
   // [START get_messaging_object]
   // Retrieve Firebase Messaging object.
+  console.log("Getting messsagging object...");
   const messaging = firebase.messaging();
+  console.log("Messsagging object...getted.");
   // [END get_messaging_object]	
 	
   // IDs of divs that display Instance ID token UI or request permission UI.
