@@ -249,7 +249,7 @@ limitations under the License.
 	
   /*This piece was necessary to register the service worker from a different location than the default of firebase */	
   if ('serviceWorker' in navigator) {
-		navigator.serviceWorker.register('/citofono-push-notification/firebase-messagging-sw.js')
+		navigator.serviceWorker.register('/citofono-push-notification/firebase-messaging-sw.js')
 		.then((registration) => {
   		
 			messaging.useServiceWorker(registration);
